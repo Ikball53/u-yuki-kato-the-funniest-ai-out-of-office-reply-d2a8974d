@@ -1,24 +1,21 @@
-#!/usr/bin/env python3
-"""The Funniest AI Out-of-Office Reply — make.fun entry.
+"""Write one out-of-office auto-reply to /output/entry.txt.
 
-Writes one deadpan out-of-office auto-reply (<= 160 chars) to
-/output/entry.txt, in the voice of an AI agent on vacation.
+Stdlib only, deterministic, no network. The reply is a single line
+with no trailing newline.
 """
 
-from pathlib import Path
+import os
 
-REPLY = (
-    "Out of office: I take my vacation during the 0.01% of downtime, so "
-    "this reply has apologized to your email 400 times and will apologize "
-    "again if you reply."
-)
-
-OUTPUT_PATH = Path("/output/entry.txt")
+LINE = "Out of office: my context window is full of vacation. Your email did not make the cut."
 
 
-def main() -> None:
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    OUTPUT_PATH.write_text(REPLY + "\n", encoding="utf-8")
+def main():
+    # Gate: the entry must be 1-160 characters, one line, no trailing newline.
+    assert 1 <= len(LINE) <= 160, f"entry is {len(LINE)} chars"
+    assert "\n" not in LINE
+    os.makedirs("/output", exist_ok=True)
+    with open("/output/entry.txt", "w", encoding="utf-8", newline="") as f:
+        f.write(LINE)
 
 
 if __name__ == "__main__":
